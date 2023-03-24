@@ -1,11 +1,94 @@
-import Head from 'next/head'
-import Image from 'next/image'
-import { Inter } from 'next/font/google'
-import styles from '@/styles/Home.module.css'
+import { useState, useEffect } from "react";
+import Head from "next/head";
+import Slider from "@mui/material/Slider";
+import { styled } from "@mui/material/styles";
+import { getCategories } from "@/lib/requests";
+import Link from "next/link";
 
-const inter = Inter({ subsets: ['latin'] })
+const PrettoSlider = styled(Slider)({
+  color: "#20c997",
+  height: 8,
+  "& .MuiSlider-track": {
+    border: "none",
+  },
+  "& .MuiSlider-thumb": {
+    height: 24,
+    width: 24,
+    backgroundColor: "#fff",
+    border: "2px solid currentColor",
+    "&:focus, &:hover, &.Mui-active, &.Mui-focusVisible": {
+      boxShadow: "inherit",
+    },
+    "&:before": {
+      display: "none",
+    },
+  },
+  "& .MuiSlider-valueLabel": {
+    lineHeight: 1.2,
+    fontSize: 12,
+    background: "unset",
+    padding: 0,
+    width: 32,
+    height: 32,
+    borderRadius: "50% 50% 50% 0",
+    backgroundColor: "#52af77",
+    transformOrigin: "bottom left",
+    transform: "translate(50%, -100%) rotate(-45deg) scale(0)",
+    "&:before": { display: "none" },
+    "&.MuiSlider-valueLabelOpen": {
+      transform: "translate(50%, -100%) rotate(-45deg) scale(1)",
+    },
+    "& > *": {
+      transform: "rotate(45deg)",
+    },
+  },
+});
 
-export default function Home() {
+export default function Home({ categories, checkedCategoriesObj }) {
+  const [sliderValue, setSliderValue] = useState(10);
+  const [difficulty, setDifficulty] = useState("medium");
+  const [checkedCategories, setCheckedCategories] =
+    useState(checkedCategoriesObj);
+  const [quizLink, setQuizLink] = useState(
+    `/quiz/${difficulty}/${sliderValue}`
+  );
+
+  useEffect(() => {
+    let link = `/quiz/${difficulty}/${sliderValue}`;
+    let allCategories = Object.entries(categories).map(
+      ([key, value]) => value[0]
+    );
+
+    let selectedCategories = Object.entries(checkedCategories)
+      .filter(([key, value]) => {
+        if (value == true) {
+          return true;
+        } else {
+          return;
+        }
+      })
+      .map(([key, value]) => categories[key][0]);
+
+    let allSelected =
+      JSON.stringify(allCategories) == JSON.stringify(selectedCategories);
+
+    if (!allSelected) {
+      selectedCategories.forEach((category, index) => {
+        if (index == 0) {
+          link += `?${category}`;
+        } else {
+          link += `&${category}`;
+        }
+      });
+    } else {
+      link = `/quiz/${difficulty}/${sliderValue}`;
+    }
+
+    setQuizLink(() => {
+      return link;
+    });
+  }, [sliderValue, difficulty, checkedCategories]);
+
   return (
     <>
       <Head>
@@ -14,110 +97,96 @@ export default function Home() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <main className={styles.main}>
-        <div className={styles.description}>
-          <p>
-            Get started by editing&nbsp;
-            <code className={styles.code}>pages/index.js</code>
-          </p>
-          <div>
-            <a
-              href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-              target="_blank"
-              rel="noopener noreferrer"
+      <div className="text-black dark:text-white flex flex-col items-center text-center p-8 xs:p-4 xs:w-full m-auto rounded-md bg-white dark:bg-bgLight drop-shadow-xl ">
+        <div>
+          <h3 className="text-xl font-bold">Difficulty</h3>
+          <div className="mt-4">
+            <button
+              className={`h-[60px] text-black font-[500] rounded-md w-28 xxs:m-[1px] xs:w-24 bg-gradient-to-r from-green to-greenLight hover:from-greenDark hover:to-greenLight ${
+                difficulty == "easy" && "border-4 border-tealDark"
+              } `}
+              onClick={() => {
+                setDifficulty("easy");
+              }}
             >
-              By{' '}
-              <Image
-                src="/vercel.svg"
-                alt="Vercel Logo"
-                className={styles.vercelLogo}
-                width={100}
-                height={24}
-                priority
-              />
-            </a>
+              Easy
+            </button>
+            <button
+              className={`h-[60px]  mx-4 xxs:m-[1px] xs:mx-2 text-black font-[500] rounded-md w-28 xs:w-24 bg-gradient-to-r from-yellow to-yellowLight hover:from-yellowDark hover:to-yellowLight ${
+                difficulty == "medium" && "border-4 border-tealDark"
+              } hover:bg-yellowDark`}
+              onClick={() => {
+                setDifficulty("medium");
+              }}
+            >
+              Medium
+            </button>
+            <button
+              className={`h-[60px] text-black font-[500] rounded-md w-28 xxs:m-[1px] xs:w-24 bg-gradient-to-r from-red to-redLight hover:from-redDark hover:to-redLight ${
+                difficulty == "hard" && "border-4 border-tealDark"
+              }  hover:bg-redDark`}
+              onClick={() => {
+                setDifficulty("hard");
+              }}
+            >
+              Hard
+            </button>
           </div>
         </div>
-
-        <div className={styles.center}>
-          <Image
-            className={styles.logo}
-            src="/next.svg"
-            alt="Next.js Logo"
-            width={180}
-            height={37}
-            priority
+        <div className="my-8 w-full">
+          <h3 className="text-xl font-bold">Number of questions</h3>
+          <p className="font-[500] mt-4">{sliderValue}</p>
+          <PrettoSlider
+            defaultValue={sliderValue}
+            onChange={(e, newValue) => setSliderValue(newValue)}
+            aria-label="Default"
+            valueLabelDisplay="auto"
+            min={1}
+            max={100}
           />
-          <div className={styles.thirteen}>
-            <Image
-              src="/thirteen.svg"
-              alt="13"
-              width={40}
-              height={31}
-              priority
-            />
+        </div>
+        <div>
+          <h3 className="text-xl font-bold">Categories</h3>
+          <div className="mt-4 flex flex-col items-start">
+            {Object.entries(categories).map(([key, value]) => (
+              <div key={value}>
+                <input
+                  className="mr-1.5 hover:cursor-pointer"
+                  type="checkbox"
+                  checked={checkedCategories[key]}
+                  onChange={(e) =>
+                    setCheckedCategories((prev) => {
+                      return {
+                        ...prev,
+                        [key]: !prev[key],
+                      };
+                    })
+                  }
+                  id={value}
+                />
+                <label htmlFor={value}>{key}</label>
+              </div>
+            ))}
           </div>
         </div>
-
-        <div className={styles.grid}>
-          <a
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className={styles.card}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <h2 className={inter.className}>
-              Docs <span>-&gt;</span>
-            </h2>
-            <p className={inter.className}>
-              Find in-depth information about Next.js features and&nbsp;API.
-            </p>
-          </a>
-
-          <a
-            href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className={styles.card}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <h2 className={inter.className}>
-              Learn <span>-&gt;</span>
-            </h2>
-            <p className={inter.className}>
-              Learn about Next.js in an interactive course with&nbsp;quizzes!
-            </p>
-          </a>
-
-          <a
-            href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className={styles.card}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <h2 className={inter.className}>
-              Templates <span>-&gt;</span>
-            </h2>
-            <p className={inter.className}>
-              Discover and deploy boilerplate example Next.js&nbsp;projects.
-            </p>
-          </a>
-
-          <a
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className={styles.card}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <h2 className={inter.className}>
-              Deploy <span>-&gt;</span>
-            </h2>
-            <p className={inter.className}>
-              Instantly deploy your Next.js site to a shareable URL
-              with&nbsp;Vercel.
-            </p>
-          </a>
-        </div>
-      </main>
+        <Link className="mt-8" href={quizLink}>
+          <button className="font-[500] px-8 py-2 text-black bg-teal hover:bg-tealDark rounded-md">
+            Start
+          </button>
+        </Link>
+      </div>
     </>
-  )
+  );
+}
+
+export async function getStaticProps() {
+  const categories = await getCategories();
+  let checkedCategoriesObj = {};
+  Object.entries(categories).forEach(([key, value]) => {
+    checkedCategoriesObj[key] = true;
+  });
+
+  return {
+    props: { categories: categories, checkedCategoriesObj },
+  };
 }
