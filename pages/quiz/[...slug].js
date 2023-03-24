@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import useSWRImmutable from "swr/immutable";
 import { useRouter } from "next/router";
-import { TailSpin } from "react-loader-spinner";
+import CircularProgress from "@mui/material/CircularProgress";
 import Link from "next/link";
 
 const fetcher = ([url, params]) =>
@@ -76,16 +76,7 @@ export default function Quiz() {
   if (isLoading || isValidating) {
     return (
       <div className="m-auto">
-        <TailSpin
-          height="80"
-          width="80"
-          color="teal"
-          ariaLabel="tail-spin-loading"
-          radius="1"
-          wrapperStyle={{}}
-          wrapperClass=""
-          visible={true}
-        />
+        <CircularProgress />
       </div>
     );
   }
