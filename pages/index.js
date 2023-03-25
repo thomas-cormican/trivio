@@ -102,7 +102,7 @@ export default function Home({ categories, checkedCategoriesObj }) {
           <h3 className="text-xl font-bold">Difficulty</h3>
           <div className="mt-4">
             <button
-              className={`h-[60px] text-black font-[500] rounded-md w-28 xxs:m-[1px] xs:w-24 bg-gradient-to-r from-green to-greenLight hover:from-greenDark hover:to-greenLight ${
+              className={`h-[60px] text-black font-[500] rounded-md w-28 xxs:m-[1px] xs:w-24 bg-gradient-to-r from-green to-greenLight  hover-hover:hover:from-greenDark hover-hover:hover:to-greenLight ${
                 difficulty == "easy" && "border-4 border-tealDark"
               } `}
               onClick={() => {
@@ -112,7 +112,7 @@ export default function Home({ categories, checkedCategoriesObj }) {
               Easy
             </button>
             <button
-              className={`h-[60px]  mx-4 xxs:m-[1px] xs:mx-2 text-black font-[500] rounded-md w-28 xs:w-24 bg-gradient-to-r from-yellow to-yellowLight hover:from-yellowDark hover:to-yellowLight ${
+              className={`h-[60px]  mx-4 xxs:m-[1px] xs:mx-2 text-black font-[500] rounded-md w-28 xs:w-24 bg-gradient-to-r from-yellow to-yellowLight hover-hover:hover:from-yellowDark hover-hover:hover:to-yellowLight ${
                 difficulty == "medium" && "border-4 border-tealDark"
               } hover:bg-yellowDark`}
               onClick={() => {
@@ -122,7 +122,7 @@ export default function Home({ categories, checkedCategoriesObj }) {
               Medium
             </button>
             <button
-              className={`h-[60px] text-black font-[500] rounded-md w-28 xxs:m-[1px] xs:w-24 bg-gradient-to-r from-red to-redLight hover:from-redDark hover:to-redLight ${
+              className={`h-[60px] text-black font-[500] rounded-md w-28 xxs:m-[1px] xs:w-24 bg-gradient-to-r from-red to-redLight hover-hover:hover:from-redDark hover-hover:hover:to-redLight ${
                 difficulty == "hard" && "border-4 border-tealDark"
               }  hover:bg-redDark`}
               onClick={() => {
@@ -141,17 +141,19 @@ export default function Home({ categories, checkedCategoriesObj }) {
             onChange={(e, newValue) => setSliderValue(newValue)}
             aria-label="Default"
             valueLabelDisplay="auto"
-            min={1}
+            step={10}
+            marks
             max={100}
+            min={10}
           />
         </div>
         <div>
           <h3 className="text-xl font-bold">Categories</h3>
           <div className="mt-4 flex flex-col items-start">
             {Object.entries(categories).map(([key, value]) => (
-              <div key={value}>
+              <div className="flex items-center" key={value}>
                 <input
-                  className="mr-1.5 hover:cursor-pointer"
+                  className="mr-1.5 hover:cursor-pointer hidden"
                   type="checkbox"
                   checked={checkedCategories[key]}
                   onChange={(e) =>
@@ -164,13 +166,21 @@ export default function Home({ categories, checkedCategoriesObj }) {
                   }
                   id={value}
                 />
-                <label htmlFor={value}>{key}</label>
+                <label
+                  htmlFor={value}
+                  className={`block border-2 h-[16px] w-[16px] border-teal mr-1 rounded-[10px] hover:cursor-pointer ${
+                    checkedCategories[key] ? `bg-tealLight` : `bg-transparent`
+                  }`}
+                ></label>
+                <label className="hover:cursor-pointer" htmlFor={value}>
+                  {key}
+                </label>
               </div>
             ))}
           </div>
         </div>
         <Link className="mt-8" href={quizLink}>
-          <button className="font-[500] px-8 py-2 text-black bg-teal hover:bg-tealDark rounded-md">
+          <button className="font-[500] px-8 py-2 text-black bg-teal hover-hover:hover:bg-tealDark rounded-md">
             Start
           </button>
         </Link>

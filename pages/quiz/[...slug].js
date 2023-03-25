@@ -122,7 +122,7 @@ export default function Quiz() {
                 <div
                   onClick={handleAnswer}
                   className={`transition ease-in items-center sm:w-full sm:mt-0 flex justify-center px-2 py-8 w-48 min-h-full ${
-                    !showAnswer && "bg-blue hover:bg-blueDark"
+                    !showAnswer && "bg-blue hover-hover:hover:bg-blueDark"
                   } m-auto hover:cursor-pointer rounded-sm ${
                     showAnswer && index == correctAnswer
                       ? "bg-green"

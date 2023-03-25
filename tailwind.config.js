@@ -38,6 +38,9 @@ module.exports = {
         tealLight: "#63e6be",
         tealDark: "#099268",
       },
+      screens: {
+        "hover-hover": { raw: "(hover: hover)" },
+      },
     },
   },
   plugins: [],
