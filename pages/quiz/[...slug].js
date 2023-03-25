@@ -85,17 +85,17 @@ export default function Quiz() {
     //if the game is over
     if (!gameOn) {
       return (
-        <div className="flex flex-col items-center justify-center text-center text-[20px] text-black p-[20px] bg-white dark:bg-bgLight rounded-md drop-shadow-xl h-fit m-auto">
+        <div className="flex flex-col items-center justify-center text-center text-[20px] p-[20px] bg-white dark:bg-bgLight rounded-md drop-shadow-xl h-fit m-auto">
           <h1>You scored: {score}</h1>
           <div>
             <button
-              className="w-[150px] m-4 p-4 bg-teal hover-hover:hover:bg-tealDark"
+              className="w-[150px] m-4 p-4 text-black bg-teal hover-hover:hover:bg-tealDark"
               onClick={reset}
             >
               Try Again?
             </button>
             <Link href="/">
-              <button className="w-[150px] m-4 p-4 bg-teal hover-hover:hover:bg-tealDark">
+              <button className="w-[150px] m-4 p-4 text-black bg-teal hover-hover:hover:bg-tealDark">
                 New Quiz
               </button>
             </Link>
